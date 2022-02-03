@@ -1,0 +1,23 @@
+version: '3'
+services:
+  user:
+    build:
+      context: ./user
+    restart: "no"
+    hostname: ${USER_HOST}
+    ports:
+      - ${USER_PORT}:${USER_PORT}
+    env_file:
+      - ./.env
+      - ./user/.${NODE_ENV}.env
+    networks:
+      - backend
+    volumes:
+      - ./user/:/var/www/user
+      - /var/www/user/node_modules
+    depends_on:
+      database:
+        condition: service_healthy
+    links:
+      - database
+      - rabbitmq
