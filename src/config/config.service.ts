@@ -27,6 +27,11 @@ export class ConfigService {
       DB_PASSWORD: process.env.USER_DB_PASSWORD,
       DB_NAME: process.env.USER_DB_NAME,
     };
+    this.config.google = {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: process.env.GOOGLE_CALLBACK_URL,
+    };
   }
 
   public get(key: string): any {
