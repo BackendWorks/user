@@ -10,7 +10,12 @@ import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class ClientAuthGuard implements CanActivate {
-  exlcudeRequests = ['/login', '/signup'];
+  exlcudeRequests = [
+    '/login',
+    '/signup',
+    '/google-oauth',
+    '/google-oauth/redirect',
+  ];
   public constructor(
     @Inject('TOKEN_SERVICE') private readonly client: ClientProxy,
   ) {}
@@ -18,7 +23,7 @@ export class ClientAuthGuard implements CanActivate {
   public async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       const request = context.getArgByIndex(0);
-      if (this.exlcudeRequests.includes(request.url)) {
+      if (this.exlcudeRequests.includes(request.url.split('?')[0])) {
         return true;
       }
       const Authorization = request.headers['authorization'];

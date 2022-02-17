@@ -5,7 +5,6 @@ import {
   Get,
   Post,
   Put,
-  SetMetadata,
   UseInterceptors,
 } from '@nestjs/common';
 import { AppService } from './app.service';
@@ -15,9 +14,7 @@ import { IAuthPayload } from './core/interfaces';
 import { CurrentUser } from './core/user.decorator';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { IGetUserById } from './core/interfaces/IMessagePatterns';
-const AllowUnauthorizedRequest = () =>
-  SetMetadata('allowUnauthorizedRequest', true);
-
+import { AllowUnauthorizedRequest } from './core/allow.unauthorized.decorator';
 @Controller()
 @UseInterceptors(ClassSerializerInterceptor)
 export class AppController {
