@@ -13,6 +13,7 @@ import { ClientAuthGuard } from './core/guards/auth.guard';
 import { AllExceptionsFilter } from './core/exception.interceptor';
 import { LocalizationModule } from '@squareboat/nestjs-localization/dist/src';
 import * as path from 'path';
+import { PermissionRepository } from './database/repository/permission.repository';
 @Module({
   imports: [
     DatabaseModule,
@@ -68,6 +69,12 @@ import * as path from 'path';
       provide: TokenRepository,
       useFactory: (connection: Connection) =>
         connection.getCustomRepository(TokenRepository),
+      inject: [Connection],
+    },
+    {
+      provide: PermissionRepository,
+      useFactory: (connection: Connection) =>
+        connection.getCustomRepository(PermissionRepository),
       inject: [Connection],
     },
     {
