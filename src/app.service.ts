@@ -36,11 +36,14 @@ export class AppService {
   }
 
   public log(type: string, message: string, payload?: any) {
-    this.logger.emit(type, {
-      message,
-      payload,
-      service: this.configService.get('service'),
-    });
+    this.logger.emit(
+      type,
+      JSON.stringify({
+        message,
+        payload,
+        service: this.configService.get('service'),
+      }),
+    );
   }
 
   public getUserById(userId: number) {
