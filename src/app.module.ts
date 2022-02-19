@@ -12,7 +12,7 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ClientAuthGuard } from './core/guards/auth.guard';
 import { AllExceptionsFilter } from './core/exception.interceptor';
 import { LocalizationModule } from '@squareboat/nestjs-localization/dist/src';
-import { GoogleOauthModule } from './google-oauth/google-oauth.module';
+import { GoogleOauthModule } from './modules';
 import * as path from 'path';
 
 @Module({
@@ -70,7 +70,7 @@ import * as path from 'path';
         inject: [ConfigService],
       },
     ]),
-    GoogleOauthModule,
+    // GoogleOauthModule,
   ],
   controllers: [AppController],
   providers: [

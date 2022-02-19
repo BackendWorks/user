@@ -23,7 +23,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
     if (message) {
       const lang = request.headers['accept-language'] || 'en';
       const trans_message = __(message, lang);
-      if (message.includes('ERR')) {
+      if (message.includes('ERROR')) {
         message = exception.message;
       } else {
         message = trans_message;

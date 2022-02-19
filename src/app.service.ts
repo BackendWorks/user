@@ -19,7 +19,6 @@ import { ConfigService } from './config/config.service';
 import { Status } from './database/entities/status.entity';
 import * as moment from 'moment';
 import { IMailPayload } from './core/interfaces';
-import { name } from '../package.json';
 
 @Injectable()
 export class AppService {
@@ -37,7 +36,11 @@ export class AppService {
   }
 
   public log(type: string, message: string, payload?: any) {
-    this.logger.emit(type, { message, payload, service: name });
+    this.logger.emit(type, {
+      message,
+      payload,
+      service: this.configService.get('service'),
+    });
   }
 
   public getUserById(userId: number) {

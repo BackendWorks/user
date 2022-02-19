@@ -2,9 +2,9 @@ import { config } from 'dotenv';
 import { join } from 'path';
 let envPath;
 if (process.env.NODE_ENV) {
-  envPath = join(__dirname, `../../.${process.env.NODE_ENV}.env`);
+  envPath = join(__dirname, `../.${process.env.NODE_ENV}.env`);
 } else {
-  envPath = join(__dirname, '../../../.env');
+  envPath = join(__dirname, '../../.env');
 }
 config({ path: envPath });
 import { Injectable } from '@nestjs/common';
@@ -14,6 +14,7 @@ export class ConfigService {
   private config: { [key: string]: any } = {};
   constructor() {
     this.config.servicePort = process.env.USER_PORT;
+    this.config.service = process.env.USER_HOST;
     this.config.rb_url = process.env.RABBITMQ_URL;
     this.config.token_queue = process.env.RABBITMQ_TOKEN_QUEUE;
     this.config.user_queue = process.env.RABBITMQ_USER_QUEUE;
