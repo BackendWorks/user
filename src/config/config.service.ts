@@ -18,6 +18,7 @@ export class ConfigService {
     this.config.token_queue = process.env.RABBITMQ_TOKEN_QUEUE;
     this.config.user_queue = process.env.RABBITMQ_USER_QUEUE;
     this.config.mailer_queue = process.env.RABBITMQ_MAILER_QUEUE;
+    this.config.logger_queue = process.env.RABBITMQ_LOGGER_QUEUE;
     this.config.env = process.env.NODE_ENV;
     this.config.database = {
       DB_TYPE: process.env.USER_DB_TYPE,
