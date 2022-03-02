@@ -2,9 +2,9 @@ import { config } from 'dotenv';
 import { join } from 'path';
 let envPath;
 if (process.env.NODE_ENV) {
-  envPath = join(__dirname, `../.${process.env.NODE_ENV}.env`);
+  envPath = join(__dirname, `../../.${process.env.NODE_ENV}.env`);
 } else {
-  envPath = join(__dirname, '../../.env');
+  envPath = join(__dirname, '../../../.env');
 }
 config({ path: envPath });
 import { Injectable } from '@nestjs/common';
