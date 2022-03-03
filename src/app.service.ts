@@ -19,7 +19,6 @@ import { ConfigService } from './config/config.service';
 import { Status } from './database/entities/status.entity';
 import * as moment from 'moment';
 import { IMailPayload } from './core/interfaces';
-import { PermissionRepository } from './database/repository/permission.repository';
 
 @Injectable()
 export class AppService {
@@ -29,21 +28,10 @@ export class AppService {
     private userRepository: UserRepository,
     private tokenRepository: TokenRepository,
     private configService: ConfigService,
-    private permissionRepository: PermissionRepository,
   ) {
     this.tokenClient.connect();
     this.mailClient.connect();
-    // uncomment below function to seed permissions table
-    // this.seedPermissions();
   }
-
-  /**
-   * Seeds permission data into the table
-   */
-  seedPermissions = async () => {
-    await this.permissionRepository.insertPermissions();
-    console.log('Permissions seeded!!!');
-  };
 
   public getUserById(userId: number) {
     return this.userRepository.findOne(userId);
