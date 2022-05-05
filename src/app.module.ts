@@ -54,21 +54,6 @@ import * as path from 'path';
         }),
         inject: [ConfigService],
       },
-      {
-        name: 'LOGGER_SERVICE',
-        imports: [ConfigModule],
-        useFactory: (configService: ConfigService) => ({
-          transport: Transport.RMQ,
-          options: {
-            urls: [`${configService.get('rb_url')}`],
-            queue: `${configService.get('logger_queue')}`,
-            queueOptions: {
-              durable: false,
-            },
-          },
-        }),
-        inject: [ConfigService],
-      },
     ]),
     // GoogleOauthModule,
   ],

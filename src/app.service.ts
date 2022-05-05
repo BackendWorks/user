@@ -6,17 +6,15 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { UserRepository } from './database/repository/user.repository';
+import { TokenRepository } from './database/repository/token.repository';
 import { CreateUserDto, ForgotPasswordDto, LoginDto } from './core/dtos';
 import { hashSync, compareSync } from 'bcrypt';
 import { User } from './database/entities/user.entity';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
-import { Role } from './database/entities/role.entity';
 import { nanoid } from 'nanoid';
-import { TokenRepository } from './database/repository/token.repository';
-import { Token } from './database/entities/token.entity';
+import { Token, Status, Role } from './database/entities';
 import { ConfigService } from './config/config.service';
-import { Status } from './database/entities/status.entity';
 import * as moment from 'moment';
 import { IMailPayload } from './core/interfaces';
 
@@ -25,25 +23,12 @@ export class AppService {
   constructor(
     @Inject('TOKEN_SERVICE') private readonly tokenClient: ClientProxy,
     @Inject('MAIL_SERVICE') private readonly mailClient: ClientProxy,
-    @Inject('LOGGER_SERVICE') private readonly logger: ClientProxy,
     private userRepository: UserRepository,
     private tokenRepository: TokenRepository,
     private configService: ConfigService,
   ) {
     this.tokenClient.connect();
     this.mailClient.connect();
-    this.logger.connect();
-  }
-
-  public log(type: string, message: string, payload?: any) {
-    this.logger.emit(
-      type,
-      JSON.stringify({
-        message,
-        payload,
-        service: this.configService.get('service'),
-      }),
-    );
   }
 
   public getUserById(userId: number) {
@@ -78,7 +63,6 @@ export class AppService {
       delete gen_token.user.password;
       return gen_token;
     } catch (e) {
-      this.log('error', 'internal server error', e);
       throw new InternalServerErrorException(e);
     }
   }
@@ -119,6 +103,10 @@ export class AppService {
         { id: authUserId },
         { password: hashPassword },
       );
+      await this.tokenRepository.update(
+        { id: getActiveToken.id },
+        { status: Status.Archived },
+      );
       const payload: IMailPayload = {
         template: 'FORGOT_PASSWORD',
         payload: {
@@ -132,7 +120,6 @@ export class AppService {
       };
       this.mailClient.emit('send_email', payload);
     } catch (e) {
-      this.log('error', 'internal server error', e);
       throw new InternalServerErrorException(e);
     }
   }
@@ -142,7 +129,6 @@ export class AppService {
       const { email, password } = data;
       const checkUser = await this.userRepository.findUserAccountByEmail(email);
       if (!checkUser) {
-        this.log('info', 'user not found!');
         throw new HttpException(
           'USER_NOT_FOUND',
           HttpStatus.INTERNAL_SERVER_ERROR,
@@ -162,7 +148,6 @@ export class AppService {
         user: checkUser,
       };
     } catch (e) {
-      this.log('error', 'internal server error', e);
       throw new InternalServerErrorException(e);
     }
   }
@@ -172,7 +157,6 @@ export class AppService {
       const { email, password, firstname, lastname } = data;
       const checkUser = await this.userRepository.findUserAccountByEmail(email);
       if (checkUser) {
-        this.log('info', 'user exits!', checkUser);
         throw new HttpException('USER_EXISTS', HttpStatus.CONFLICT);
       }
       const hashPassword = this.createHash(password);
@@ -192,7 +176,6 @@ export class AppService {
         user,
       };
     } catch (e) {
-      this.log('error', 'internal server error', e);
       throw new InternalServerErrorException(e);
     }
   }
