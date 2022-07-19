@@ -138,9 +138,13 @@ export class AppService {
         throw new HttpException('INVALID_PASSWORD', HttpStatus.CONFLICT);
       }
       const createTokenResponse = await firstValueFrom(
-        this.tokenClient.send('token_create', {
-          id: checkUser.id,
-        }),
+        this.tokenClient.send(
+          'token_create',
+          JSON.stringify({
+            id: checkUser.id,
+            role: checkUser.role,
+          }),
+        ),
       );
       delete checkUser.password;
       return {
@@ -168,7 +172,10 @@ export class AppService {
       newUser.role = Role.USER;
       const user = await this.userRepository.save(newUser);
       const createTokenResponse = await firstValueFrom(
-        this.tokenClient.send('token_create', JSON.stringify(user)),
+        this.tokenClient.send(
+          'token_create',
+          JSON.stringify({ id: user.id, role: user.role }),
+        ),
       );
       delete user.password;
       return {
